@@ -246,8 +246,53 @@ public abstract with sharing class fflib_SObjectSelector
      **/
     public List<SObject> selectSObjectsById(Set<Id> idSet)
     {
-        return Database.query(buildQuerySObjectById());
+	    return Database.query(buildQuerySObjectById());
     }
+
+
+	/**
+	 * selectSObjectById
+	 *
+	 * @description Fetch the records from the registered records, if required query non-registered records from the database
+	 *
+	 * @param idSet A set of ids for records to either fetch from the clean registered or the database
+	 * @param unitOfWork Instance of fflib_ISObjectUnitOfWork for retrieving the clean registered records
+	 *
+	 * @returns A list of SObject's
+	 */
+	public List<SObject> selectSObjectsById(Set<Id> idSet, fflib_ISObjectUnitOfWork unitOfWork)
+    {
+	    Set<Id> nonRegisteredIds = new Set<Id>(idSet);
+	    Set<Id> cleanIds = unitOfWork.extractCleanIds(getSObjectType(), nonRegisteredIds);
+
+	    List<SObject> result = new List<SObject>();
+	    if (!nonRegisteredIds.isEmpty())
+	    {
+		    result.addAll(selectSObjectsById(nonRegisteredIds));
+	    }
+	    if (!cleanIds.isEmpty())
+	    {
+		    result.addAll(unitOfWork.getClean(getSObjectType(), cleanIds));
+	    }
+	    return result;
+    }
+
+
+
+
+	/*public List<SObject> selectSObjectByIdField(SObjectField sObjectField, Set<Id> idSet)
+	{
+		if (hasUnitOfWork())
+		{
+			return selectSObjectsByIdWithIdentityMap(idSet);
+		}
+		else
+		{
+			return Database.query(
+
+			);
+		}
+	}*/
         
     /**
      * Performs a SOQL query, 
