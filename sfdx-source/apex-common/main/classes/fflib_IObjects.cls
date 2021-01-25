@@ -23,78 +23,57 @@
  *  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
-public virtual class fflib_Objects implements fflib_IObjects
+public interface fflib_IObjects extends fflib_IDomain
 {
-	protected List<Object> objects { get; private set;}
+	/**
+	 * @param value Values to check if they are part of the domain
+	 *
+	 * @return True if the provided value is part of the domain
+	 */
+	Boolean contains(Object value);
 
 	/**
-	 * Class constructor
+	 * @param values Values to check if they are part of the domain
+	 *
+	 * @return True if all the provided values are part of the domain
 	 */
-	public fflib_Objects(List<Object> objects)
-	{
-		this.objects = objects.clone();
-	}
+	Boolean containsAll(List<Object> values);
 
-	public virtual Object getType()
-	{
-		return Object.class;
-	}
+	/**
+	 * @param values Values to check if they are part of the domain
+	 *
+	 * @return True if all the provided values are part of the domain
+	 */
+	Boolean containsAll(Set<Object> values);
 
-	public List<Object> getObjects()
-	{
-		return this.objects;
-	}
+	/**
+	 * @param value Value to check if it is part of the domain
+	 *
+	 * @return True if the provided value is not part of the domain
+	 */
+	Boolean containsNot(Object value);
 
-	public Boolean contains(Object value)
-	{
-		return getObjects().contains(value);
-	}
+	/**
+	 * @param values Values to check if they are part of the domain
+	 *
+	 * @return True if all the provided values are not part of the domain
+	 */
+	Boolean containsNot(List<Object> values);
 
-	public Boolean containsAll(List<Object> values)
-	{
-		return containsAll(new Set<Object>(values));
-	}
+	/**
+	 * @param values Values to check if they are part of the domain
+	 *
+	 * @return True if all the provided values are not part of the domain
+	 */
+	Boolean containsNot(Set<Object> values);
 
-	public Boolean containsAll(Set<Object> values)
-	{
-		for (Object value : values)
-		{
-			if (!getObjects().contains(value)) return false;
-		}
-		return true;
-	}
+	/**
+	 * @return Returns True is the domain is empty
+	 */
+	Boolean isEmpty();
 
-	public Boolean containsNot(Object value)
-	{
-		return !contains(value);
-	}
-
-	public Boolean containsNot(List<Object> values)
-	{
-		return containsNot(new Set<Object>(values));
-	}
-
-	public Boolean containsNot(Set<Object> values)
-	{
-		for (Object value : values)
-		{
-			if (getObjects().contains(value)) return false;
-		}
-		return true;
-	}
-
-	public Boolean isEmpty()
-	{
-		return (getObjects() == null || getObjects().isEmpty());
-	}
-
-	public Boolean isNotEmpty()
-	{
-		return !isEmpty();
-	}
-
-	protected void setObjects(List<Object> objects)
-	{
-		this.objects = objects;
-	}
+	/**
+	 * @return Returns True is the domain has objects
+	 */
+	Boolean isNotEmpty();
 }

@@ -465,9 +465,7 @@ public virtual with sharing class fflib_SObjectDomain
 			return null;		
 		fflib_SObjectDomain domain = domains.remove(domains.size()-1);
 
-		// todo - The next line is not compatible, as it changes the context of the domain at runtime,
-		// shouldn't we create a new instance of the domain with just those records?
-//		domain.Records = records;
+		domain.setObjects(records);
 		return domain;
 	}
 	

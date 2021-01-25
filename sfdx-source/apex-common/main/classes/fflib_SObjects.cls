@@ -25,6 +25,7 @@
 **/
 public virtual class fflib_SObjects
 		extends fflib_Objects
+		implements fflib_ISObjects
 {
 
 	public Schema.DescribeSObjectResult SObjectDescribe {get; private set;}

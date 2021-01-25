@@ -32,7 +32,7 @@ private class fflib_ApplicationTest
 	{
 		// Registered Accounts domain class by SObject List
 		Id testAccountId = fflib_IDGenerator.generate(Account.SObjectType);
-		fflib_Domain domainObjectAcct =
+		fflib_IDomain domainObjectAcct =
 			Domain.newInstance(
 				new List<Account> 
 					{ new Account( 
@@ -55,7 +55,7 @@ private class fflib_ApplicationTest
 
 		// Registered Opportunities domain class by SObject List
 		Id testOpportunityId = fflib_IDGenerator.generate(Opportunity.SObjectType);
-		fflib_Domain domainObjectOpp =
+		fflib_IDomain domainObjectOpp =
 			Domain.newInstance(
 				new List<Opportunity> 
 					{ new Opportunity( 
@@ -109,7 +109,7 @@ private class fflib_ApplicationTest
 		System.assert(domainObjectAcct instanceof fflib_SObjectMocks.SObjectDomain);		
 	}
 
-	private static SObject getFirstSObject(fflib_Domain domainObjectAcct)
+	private static SObject getFirstSObject(fflib_IDomain domainObjectAcct)
 	{
 		return ((List<SObject>) domainObjectAcct.getObjects())[0];
 	}
@@ -134,7 +134,7 @@ private class fflib_ApplicationTest
 
 		// When
 		Selector.setMock(selectorMock);
-		fflib_Domain domainObjectAcc = Domain.newInstance(new Set<Id> { testAccountId });
+		fflib_IDomain domainObjectAcc = Domain.newInstance(new Set<Id> { testAccountId });
 
 		// Then
 		List<Account> assertAccounts = (List<Account>) domainObjectAcc.getObjects();

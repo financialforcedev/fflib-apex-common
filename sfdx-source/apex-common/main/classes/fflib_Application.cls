@@ -274,7 +274,7 @@ public virtual class fflib_Application
 
 		protected Map<Object, Type> constructorTypeByObject;
 
-		protected Map<Object, fflib_Domain> mockDomainByObject;
+		protected Map<Object, fflib_IDomain> mockDomainByObject;
 
 		/**
 		 * Constructs a Domain factory, using an instance of the Selector Factory
@@ -290,7 +290,7 @@ public virtual class fflib_Application
 		{
 			m_selectorFactory = selectorFactory;
 			this.constructorTypeByObject = constructorTypeByObject;
-			this.mockDomainByObject = new Map<Object, fflib_Domain>();
+			this.mockDomainByObject = new Map<Object, fflib_IDomain>();
 		}
 
 		/**
@@ -307,7 +307,7 @@ public virtual class fflib_Application
 		{
 			m_selectorFactory = selectorFactory;
 			this.constructorTypeByObject = getConstructorTypeByObject(sObjectByDomainConstructorType);
-			this.mockDomainByObject = new Map<Object, fflib_Domain>();
+			this.mockDomainByObject = new Map<Object, fflib_IDomain>();
 		}
 
 		/**
@@ -318,7 +318,7 @@ public virtual class fflib_Application
 		 * @param recordIds A list of Id's of the same type
 		 * @exception Throws an exception via the Selector Factory if the Ids are not all of the same SObjectType
 		 **/
-		public virtual fflib_Domain newInstance(Set<Id> recordIds)
+		public virtual fflib_IDomain newInstance(Set<Id> recordIds)
 		{
 			return newInstance(m_selectorFactory.selectById(recordIds));
 		}
@@ -331,7 +331,7 @@ public virtual class fflib_Application
 		 * @exception Throws an exception if the SObjectType cannot be determined from the list
 		 *              or the constructor for Domain class was not registered for the SObjectType
 		 **/
-		public virtual fflib_Domain newInstance(List<SObject> records)
+		public virtual fflib_IDomain newInstance(List<SObject> records)
 		{
 			SObjectType domainSObjectType = records.getSObjectType();
 			if (domainSObjectType == null)
@@ -340,7 +340,7 @@ public virtual class fflib_Application
 			return newInstance((List<Object>) records, (Object) domainSObjectType);
 		}
 
-		public virtual fflib_Domain newInstance(List<Object> objects, Object objectType)
+		public virtual fflib_IDomain newInstance(List<Object> objects, Object objectType)
 		{
 			// Mock implementation?
 			if (mockDomainByObject.containsKey(objectType))
@@ -357,18 +357,18 @@ public virtual class fflib_Application
 			// for backwards compatibility
 			if (domainConstructor instanceof fflib_SObjectDomain.IConstructable2)
 			{
-				return (fflib_Domain)
+				return (fflib_IDomain)
 						((fflib_SObjectDomain.IConstructable2) domainConstructor)
 								.construct((List<SObject>) objects,	(SObjectType) objectType);
 			}
 			else if (domainConstructor instanceof fflib_SObjectDomain.IConstructable)
 			{
-				return (fflib_Domain)
+				return (fflib_IDomain)
 						((fflib_SObjectDomain.IConstructable) domainConstructor)
 								.construct((List<SObject>) objects);
 			}
 
-			return ((fflib_DomainConstructor) domainConstructor)
+			return ((fflib_IDomainConstructor) domainConstructor)
 						.construct(objects);
 		}
 
@@ -383,7 +383,7 @@ public virtual class fflib_Application
 		 * @remark Will support List<SObject> but all records in the list will be assumed to be of
 		 *         the type specified in sObjectType
 		 **/
-		public virtual fflib_Domain newInstance(List<SObject> records, SObjectType domainSObjectType)
+		public virtual fflib_IDomain newInstance(List<SObject> records, SObjectType domainSObjectType)
 		{
 			if(domainSObjectType==null)
 				throw new DeveloperException('Must specify sObjectType');
@@ -397,11 +397,11 @@ public virtual class fflib_Application
 		@TestVisible
 		private virtual void setMock(fflib_ISObjectDomain mockDomain)
 		{
-			mockDomainByObject.put((Object) mockDomain.sObjectType(), (fflib_Domain) mockDomain);
+			mockDomainByObject.put((Object) mockDomain.sObjectType(), (fflib_IDomain) mockDomain);
 		}
 
 		@TestVisible
-		private virtual void setMock(fflib_Domain mockDomain)
+		private virtual void setMock(fflib_IDomain mockDomain)
 		{
 			mockDomainByObject.put(mockDomain.getType(), mockDomain);
 		}
