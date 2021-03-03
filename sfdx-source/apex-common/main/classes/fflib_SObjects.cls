@@ -80,26 +80,152 @@ public virtual class fflib_SObjects
 		return SObjectDescribe.getSObjectType();
 	}
 
-	protected virtual fflib_SObjects selectByFieldValue(Schema.SObjectField sObjectField, Object value)
+	/**
+ * @param sObjectField The Schema.SObjectField to compare against the given value
+ * @param value The given value of the records sObjectField to include in the return
+ *
+ * @return A list with only the SObjects where the given sObjectField has the provided value
+ */
+	protected virtual List<SObject> getRecordsByFieldValue(Schema.SObjectField sObjectField, Object value)
 	{
-		return selectByFieldValues(
-				sObjectField,
-				new Set<Object>{ value }
-		);
+		return getRecordsByFieldValues(sObjectField, new Set<Object>{value});
 	}
 
-	protected virtual fflib_SObjects selectByFieldValues(Schema.SObjectField sObjectField, Set<Object> values)
+	/**
+	 * @param sObjectField The Schema.SObjectField to compare against the given value
+	 * @param values The given values of the records sObjectField to include in the return
+	 *
+	 * @return A list with only the SObjects where the given sObjectField value is part of the provided values
+	 */
+	protected virtual List<SObject> getRecordsByFieldValues(Schema.SObjectField sObjectField, Set<Object> values)
 	{
 		List<SObject> result = new List<SObject>();
 		for (SObject record : getRecords())
 		{
-			if (values.contains(record.get(sObjectField)))
+			if (values?.contains(record.get(sObjectField)))
 			{
 				result.add(record);
 			}
 		}
-		return new fflib_SObjects(result, getObjectType());
+		return result;
 	}
+
+	/**
+	 * @param sObjectField The Schema.SObjectField to check its value for a Blank value
+	 *
+	 * @return A list with only the SObjects where the given sObjectField value is either null or '')
+	 */
+	protected virtual List<SObject> getRecordsWithBlankFieldValues(Schema.SObjectField sObjectField)
+	{
+		return getRecordsWithBlankFieldValues(
+				new Set<Schema.SObjectField> {sObjectField}
+		);
+	}
+
+	/**
+	 * @param sObjectFields The Schema.SObjectField's to check their value for a Blank value
+	 *
+	 * @return A list with only the SObjects where the at least one given sObjectField value is either null or '')
+	 */
+	protected virtual List<SObject> getRecordsWithBlankFieldValues(Set<Schema.SObjectField> sObjectFields)
+	{
+		List<SObject> result = new List<SObject>();
+		for (SObject record : getRecords())
+		{
+			for (SObjectField sObjectField : sObjectFields)
+			{
+				if (String.isBlank((String) record.get(sObjectField)))
+				{
+					result.add(record);
+					break;
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * @param sObjectFields The Schema.SObjectField's to check their value for a Blank value
+	 *
+	 * @return A list with only the SObjects where the at least one given sObjectField value is either null or ''
+	 */
+	protected virtual List<SObject> getRecordsWithAllBlankFieldValues(Set<Schema.SObjectField> sObjectFields)
+	{
+		List<SObject> result = new List<SObject>();
+		for (SObject record : getRecords())
+		{
+			Boolean allBlank = true;
+			for (SObjectField sObjectField : sObjectFields)
+			{
+				if (String.isNotBlank((String) record.get(sObjectField)))
+				{
+					allBlank = false;
+					break;
+				}
+			}
+			if (allBlank) result.add(record);
+		}
+		return result;
+	}
+
+	/**
+	 * @param sObjectField The Schema.SObjectField to check its value for a Non-Blank value
+	 *
+	 * @return A list with only the SObjects where the given sObjectField value is not null or ''
+	 */
+	protected virtual List<SObject> getRecordsWithNotBlankFieldValues(Schema.SObjectField sObjectField)
+	{
+		return getRecordsWithNotBlankFieldValues(
+				new Set<Schema.SObjectField> {sObjectField}
+		);
+	}
+
+	/**
+	 * @param sObjectFields The Schema.SObjectField's to check their value for a Non-Blank value
+	 *
+	 * @return A list with only the SObjects where the at least one given sObjectField value not null or ''
+	 */
+	protected virtual List<SObject> getRecordsWithNotBlankFieldValues(Set<Schema.SObjectField> sObjectFields)
+	{
+		List<SObject> result = new List<SObject>();
+		for (SObject record : getRecords())
+		{
+			for (SObjectField sObjectField : sObjectFields)
+			{
+				if (String.isBlank((String) record.get(sObjectField)))
+				{
+					result.add(record);
+					break;
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * @param sObjectFields The Schema.SObjectField's to check their value for a Non-Blank value
+	 *
+	 * @return A list with only the SObjects where the at least one given sObjectField value is not null or ''
+	 */
+	protected virtual List<SObject> getRecordsWithAllNotBlankFieldValues(Set<Schema.SObjectField> sObjectFields)
+	{
+		List<SObject> result = new List<SObject>();
+		for (SObject record : getRecords())
+		{
+			Boolean allBlank = true;
+			for (SObjectField sObjectField : sObjectFields)
+			{
+				if (String.isNotBlank((String) record.get(sObjectField)))
+				{
+					allBlank = false;
+					break;
+				}
+			}
+			if (allBlank) result.add(record);
+		}
+		return result;
+	}
+
 
 	protected virtual void setFieldValue(Schema.SObjectField sObjectField, Object value)
 	{
