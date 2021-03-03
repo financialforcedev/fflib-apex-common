@@ -25,13 +25,15 @@
 **/
 public virtual class fflib_Objects implements fflib_IObjects
 {
-	protected List<Object> objects { get; private set;}
+	protected List<Object> objects { get; private set;} { objects = new List<Object>(); }
 
 	/**
 	 * Class constructor
 	 */
 	public fflib_Objects(List<Object> objects)
 	{
+		if (objects == null) throw new DeveloperException('A domain cannot be constructed with a null value');
+
 		this.objects = objects.clone();
 	}
 
@@ -47,19 +49,23 @@ public virtual class fflib_Objects implements fflib_IObjects
 
 	public Boolean contains(Object value)
 	{
-		return getObjects().contains(value);
+		return getObjects()?.contains(value);
 	}
 
 	public Boolean containsAll(List<Object> values)
 	{
+		if (values == null) return false;
+
 		return containsAll(new Set<Object>(values));
 	}
 
 	public Boolean containsAll(Set<Object> values)
 	{
+		if (values == null) return false;
+
 		for (Object value : values)
 		{
-			if (!getObjects().contains(value)) return false;
+			if (!getObjects()?.contains(value)) return false;
 		}
 		return true;
 	}
@@ -71,14 +77,18 @@ public virtual class fflib_Objects implements fflib_IObjects
 
 	public Boolean containsNot(List<Object> values)
 	{
+		if (values == null) return false;
+
 		return containsNot(new Set<Object>(values));
 	}
 
 	public Boolean containsNot(Set<Object> values)
 	{
+		if (values == null) return false;
+
 		for (Object value : values)
 		{
-			if (getObjects().contains(value)) return false;
+			if (getObjects()?.contains(value)) return false;
 		}
 		return true;
 	}
@@ -97,4 +107,6 @@ public virtual class fflib_Objects implements fflib_IObjects
 	{
 		this.objects = objects;
 	}
+
+	public class DeveloperException extends Exception {}
 }

@@ -35,8 +35,7 @@ public virtual class fflib_SObjects
 	 */
 	public fflib_SObjects(List<Object> objects)
 	{
-		// todo - assert for SObjectType
-		this((List<SObject>) objects);
+		this(castToSObject(objects));
 	}
 
 	public fflib_SObjects(List<SObject> records)
@@ -47,7 +46,18 @@ public virtual class fflib_SObjects
 	public fflib_SObjects(List<SObject> records, Schema.SObjectType sObjectType)
 	{
 		super(records);
-		SObjectDescribe = sObjectType.getDescribe();
+		if (sObjectType == null && records.getSObjectType() != null)
+		{
+			SObjectDescribe = records.getSObjectType().getDescribe();
+		}
+		else if (sObjectType == null)
+		{
+			throw new DeveloperException('Unable to determine SObjectType for SObject domain');
+		}
+		else
+		{
+			SObjectDescribe = sObjectType.getDescribe();
+		}
 	}
 
 	public virtual List<SObject> getRecords()
@@ -248,10 +258,20 @@ public virtual class fflib_SObjects
 		for (SObject record : getRecords())
 		{
 			Object keyValue = record.get(sObjectFieldToCheck);
-			if (values.containsKey(keyValue))
+			if (values?.containsKey(keyValue))
 			{
 				record.put(sObjectFieldToUpdate, values.get(keyValue));
 			}
 		}
 	}
+
+	private static List<SObject> castToSObject(List<Object> objects)
+	{
+		if (!(objects instanceof List<SObject>))
+			throw new DeveloperException('fflib_SObjects can only accept an instance of List<SObject>');
+
+		return (List<SObject>) objects;
+	}
+
+	public class DeveloperException extends Exception {}
 }
