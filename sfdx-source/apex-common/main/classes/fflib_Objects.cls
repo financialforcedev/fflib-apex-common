@@ -32,9 +32,10 @@ public virtual class fflib_Objects implements fflib_IObjects
 	 */
 	public fflib_Objects(List<Object> objects)
 	{
-		if (objects == null) throw new DeveloperException('A domain cannot be constructed with a null value');
-
-		this.objects = objects.clone();
+		if (objects != null)
+		{
+			this.objects = objects.clone();
+		}
 	}
 
 	public virtual Object getType()
@@ -107,6 +108,4 @@ public virtual class fflib_Objects implements fflib_IObjects
 	{
 		this.objects = objects;
 	}
-
-	public class DeveloperException extends Exception {}
 }
