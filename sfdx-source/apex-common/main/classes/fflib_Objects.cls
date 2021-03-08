@@ -32,10 +32,7 @@ public virtual class fflib_Objects implements fflib_IObjects
 	 */
 	public fflib_Objects(List<Object> objects)
 	{
-		if (objects != null)
-		{
-			this.objects = objects.clone();
-		}
+		this.objects = objects.clone();
 	}
 
 	public virtual Object getType()
@@ -78,14 +75,14 @@ public virtual class fflib_Objects implements fflib_IObjects
 
 	public Boolean containsNot(List<Object> values)
 	{
-		if (values == null) return false;
+		if (values == null) return true;
 
 		return containsNot(new Set<Object>(values));
 	}
 
 	public Boolean containsNot(Set<Object> values)
 	{
-		if (values == null) return false;
+		if (values == null) return true;
 
 		for (Object value : values)
 		{

@@ -46,18 +46,7 @@ public virtual class fflib_SObjects
 	public fflib_SObjects(List<SObject> records, Schema.SObjectType sObjectType)
 	{
 		super(records);
-		if (sObjectType == null && records.getSObjectType() != null)
-		{
-			SObjectDescribe = records.getSObjectType().getDescribe();
-		}
-		else if (sObjectType == null)
-		{
-			throw new DeveloperException('Unable to determine SObjectType for SObject domain');
-		}
-		else
-		{
-			SObjectDescribe = sObjectType.getDescribe();
-		}
+		SObjectDescribe = sObjectType.getDescribe();
 	}
 
 	public virtual List<SObject> getRecords()
@@ -267,8 +256,7 @@ public virtual class fflib_SObjects
 
 	private static List<SObject> castToSObject(List<Object> objects)
 	{
-		if (!(objects instanceof List<SObject>))
-			throw new DeveloperException('fflib_SObjects can only accept an instance of List<SObject>');
+		System.assert(objects instanceof List<SObject>, 'fflib_SObjects can only accept an instance of List<SObject>');
 
 		return (List<SObject>) objects;
 	}
