@@ -33,11 +33,6 @@ public virtual class fflib_SObjects
 	/**
 	 * Class constructor
 	 */
-	public fflib_SObjects(List<Object> objects)
-	{
-		this(castToSObject(objects));
-	}
-
 	public fflib_SObjects(List<SObject> records)
 	{
 		super(records);
@@ -74,17 +69,12 @@ public virtual class fflib_SObjects
 		return result;
 	}
 
-	public virtual Schema.SObjectType getObjectType()
-	{
-		return SObjectDescribe.getSObjectType();
-	}
-
 	/**
- * @param sObjectField The Schema.SObjectField to compare against the given value
- * @param value The given value of the records sObjectField to include in the return
- *
- * @return A list with only the SObjects where the given sObjectField has the provided value
- */
+	 * @param sObjectField The Schema.SObjectField to compare against the given value
+	 * @param value The given value of the records sObjectField to include in the return
+	 *
+	 * @return A list with only the SObjects where the given sObjectField has the provided value
+	 */
 	protected virtual List<SObject> getRecordsByFieldValue(Schema.SObjectField sObjectField, Object value)
 	{
 		return getRecordsByFieldValues(sObjectField, new Set<Object>{value});
@@ -211,16 +201,16 @@ public virtual class fflib_SObjects
 		List<SObject> result = new List<SObject>();
 		for (SObject record : getRecords())
 		{
-			Boolean allBlank = true;
+			Boolean allNonBlank = true;
 			for (SObjectField sObjectField : sObjectFields)
 			{
-				if (String.isNotBlank((String) record.get(sObjectField)))
+				if (String.isBlank((String) record.get(sObjectField)))
 				{
-					allBlank = false;
+					allNonBlank = false;
 					break;
 				}
 			}
-			if (allBlank) result.add(record);
+			if (allNonBlank) result.add(record);
 		}
 		return result;
 	}
@@ -253,13 +243,4 @@ public virtual class fflib_SObjects
 			}
 		}
 	}
-
-	private static List<SObject> castToSObject(List<Object> objects)
-	{
-		System.assert(objects instanceof List<SObject>, 'fflib_SObjects can only accept an instance of List<SObject>');
-
-		return (List<SObject>) objects;
-	}
-
-	public class DeveloperException extends Exception {}
 }
